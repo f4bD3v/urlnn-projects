@@ -2,6 +2,7 @@ import random
 import numpy as np
 import math
 from random import choice
+import matplotlib.pyplot as plt
 
 def gaussian(i, mu, sigma, g_const):
 	exponent = math.exp(-math.pow((i-mu),2)/math.pow(sigma,2))
@@ -17,34 +18,40 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 	deltaw = 1
 	unsatisfied = True
 	vf = np.vectorize(f)
+	ct = 0
 
 	while unsatisfied:
 		# choose random set of inputs from the five gaussians
 		j = np.asscalar(np.random.choice(js))
-		print type(j)
-		print int(j)
+ 		#print "Simulation "+str(ct)
+		#print "type j:" + str(type(j))
+		#print "int j: "+str(int(j))
 		x = all_is[int(j)]
-		print x
+		#print "x:"+str(x)
 		y=vf(w*x)
-		print y
+		#print "y:"+str(y)
 
 		dtheta=(-theta+pow(y,2))/tao
-		ntheta=theta+dtheta
- 		dw=eta*x*(pow(y,2)-y*theta)
+		ntheta=theta+dtheta*dt
+ 		dw=eta*x*(pow(y,2)-y*ntheta)
  		wn=w+dt*dw
 
  		# constrain w to zero
+ 		wn = vf(wn)
  		deltaw=wn-w	
- 		print deltaw
- 		if all([dw<1E-12 for dw in deltaw]):
+ 		if ct > 1000:
+ 		    print "deltaw: "+str(w)
+ 		 
+ 		if all([abs(dw)<1E-5 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
 
- 		print "theta: "+str(ntheta)
- 		print "w: "+str(w)
+ 		#print "theta: "+str(ntheta)
+ 		#print "w: "+str(w)
+ 		ct = ct+1
 
- 	return y 
+ 	return w
 
 # params
 
@@ -57,10 +64,10 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 def main():
 
 	i = np.linspace(1, 100, 100, endpoint=True)
-	print i
 	js = np.linspace(0, 4, 5, endpoint=True)
 
-	mu = [10,30,50,70,90]
+	#mu = [10,30,50,70,90]
+	mu = [10,10,10,10,10]
 	sigma = 10
 
 	gf = np.vectorize(gaussian, excluded=['mu', 'sigma', 'g_const'])
@@ -71,9 +78,13 @@ def main():
 
 	mu_w0 = 3.0
 	sigma_w0 = 1.0 # ^= sd
-	rounds = 1000
+	num_rounds = 500
+	rounds = num_rounds
+	
+	weights = np.zeros((100,1))
 
 	while rounds > 0:
+	        print "Rounds: "+str(rounds)
 		eta = 5E-2
 		tao = 1E2
 		dt = 1
@@ -81,12 +92,18 @@ def main():
 		w = [np.random.normal(mu_w0, sigma_w0) for elem in i]
 		theta = 2.5
 
-		yf = simulate(theta, eta, tao, w, all_is, js, dt)
-		# force w_i >= 0
-		#rounds=rounds-1
-		rounds=0
-
+		w = simulate(theta, eta, tao, w, all_is, js, dt)
+		rounds=rounds-1
+		#average the weights over the different rounds
+		weights = weights + w/num_rounds;
+	print w
+	plt.clf()
+	plt.plot(i.T,weights.T)
+	plt.savefig('sim2.jpg')
 	return
+
+
+	
 
 	
 if __name__ == "__main__":
