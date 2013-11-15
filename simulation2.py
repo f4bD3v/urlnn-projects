@@ -28,7 +28,7 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 		#print "int j: "+str(int(j))
 		x = all_is[int(j)]
 		#print "x:"+str(x)
-		y=vf(w*x)
+		y=f(np.dot(w,x))
 		#print "y:"+str(y)
 
 		dtheta=(-theta+pow(y,2))/tao
@@ -39,8 +39,8 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
  		# constrain w to zero
  		wn = vf(wn)
  		deltaw=wn-w	
- 		if ct > 1000:
- 		    print "deltaw: "+str(w)
+ 		#if ct > 1000:
+ 		    #print "deltaw: "+str(w)
  		 
  		if all([abs(dw)<1E-5 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
@@ -66,8 +66,7 @@ def main():
 	i = np.linspace(1, 100, 100, endpoint=True)
 	js = np.linspace(0, 4, 5, endpoint=True)
 
-	#mu = [10,30,50,70,90]
-	mu = [10,10,10,10,10]
+	mu = [10,30,50,70,90]
 	sigma = 10
 
 	gf = np.vectorize(gaussian, excluded=['mu', 'sigma', 'g_const'])
