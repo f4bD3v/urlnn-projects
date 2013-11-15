@@ -1,13 +1,17 @@
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
-def simulation(theta, eta, tao, w, x, dt):
+def simulation(theta, eta, tao, w, x, dt,zi):
 	deltaw = 1
 	while deltaw>1E-5:
+	        z=random.random()
+	        if z>zi:
+		   x=0
 		y=w*x
 		dtheta=(-theta+pow(y,2))/tao
-		ntheta=theta+dtheta
- 		dw=eta*x*(pow(y,2)-y*theta)
+		ntheta=theta+dtheta*dt
+ 		dw=eta*x*(pow(y,2)-y*ntheta)
  		wn=w+dt*dw
  		deltaw=wn-w	
  		theta=ntheta
@@ -17,6 +21,7 @@ def simulation(theta, eta, tao, w, x, dt):
  		print "w: "+str(w)
 
  		print wn
+ 		x = 1
 
  	return w*x
 
@@ -32,7 +37,7 @@ def main():
 	z_steps = 13
 	zths = np.linspace(0.2, 0.8, z_steps, endpoint=True)
 
-	num_rounds = 10
+	num_rounds = 1000
 	ys = np.empty(0)
 
 	for i in range(0,z_steps):
@@ -41,10 +46,7 @@ def main():
 		rounds = num_rounds
 
 		while rounds > 0:
-			x0=1
-			z=random.random()
-			if z>zths[i]:
-				x0=0	
+			x0=1	
 
 			# initial conditions
 			theta=theta0=0
@@ -55,18 +57,23 @@ def main():
 			x=x0
 			dt = 1
 
-			y = simulation(theta, eta, tao, w, x, dt)
+			y = simulation(theta, eta, tao, w, x, dt,zths[i])
 			zys = np.append(zys, y)
 			rounds = rounds-1
 			print "zys :"+str(zys)
 
 		print "i :"+str(i)
 		if i == 0:
-			ys = zys
+			ys = sum(zys) / num_rounds
 		else:
-			ys = np.append(ys, zys, axis=0)
+			ys = np.append(ys,sum(zys)/num_rounds)
 
 		print "ys :"+str(ys)
+		
+	print ""+str(len(ys))
+	plt.clf()
+	plt.plot(zths,ys)
+	plt.savefig('sim1.jpg')
 
 	return
 
