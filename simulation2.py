@@ -24,6 +24,7 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 		print type(j)
 		print int(j)
 		x = all_is[int(j)]
+		print x
 		y=vf(w*x)
 		print y
 
@@ -31,10 +32,11 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 		ntheta=theta+dtheta
  		dw=eta*x*(pow(y,2)-y*theta)
  		wn=w+dt*dw
- 		if wn.any() < 0:
- 			break
+
+ 		# constrain w to zero
  		deltaw=wn-w	
- 		if deltaw.all() < 1E-5:
+ 		print deltaw
+ 		if all([dw<1E-12 for dw in deltaw]):
  			unsatisfied = False
  		theta=ntheta
  		w=wn
