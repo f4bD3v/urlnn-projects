@@ -29,13 +29,13 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 
 		dtheta=(-theta+pow(y,2))/tao
 		ntheta=theta+dtheta
- 		dw=eta*x*(pow(y,2)-y*ntheta)
+ 		dw=eta*x*(pow(y,2)-y*theta)
  		wn=w+dt*dw
  		if wn.any() < 0:
  			break
  		deltaw=wn-w	
  		if deltaw.all() < 1E-5:
- 			satisfied = True
+ 			unsatisfied = False
  		theta=ntheta
  		w=wn
 
