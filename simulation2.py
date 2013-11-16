@@ -38,18 +38,16 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 
  		# constrain w to zero
  		wn = vf(wn)
+ 		
  		deltaw=wn-w	
- 		#if ct > 1000:
- 		    #print "deltaw: "+str(w)
  		 
- 		if all([abs(dw)<1E-5 for dw in deltaw]):            #corrected here: absolute value
+ 		if all([abs(dw)<1E-12 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
 
  		#print "theta: "+str(ntheta)
  		#print "w: "+str(w)
- 		ct = ct+1
 
  	return w
 
@@ -77,10 +75,11 @@ def main():
 
 	mu_w0 = 3.0
 	sigma_w0 = 1.0 # ^= sd
-	num_rounds = 500
+	num_rounds = 1000
 	rounds = num_rounds
 	
-	weights = np.zeros((100,1))
+	weights = np.zeros((100,))
+	print "weight:"+str(weights.shape)
 
 	while rounds > 0:
 	        print "Rounds: "+str(rounds)
@@ -88,17 +87,27 @@ def main():
 		tao = 1E2
 		dt = 1
 	
-		w = [np.random.normal(mu_w0, sigma_w0) for elem in i]
+		w = np.array([np.random.normal(mu_w0, sigma_w0) for elem in i])
 		theta = 2.5
 
 		w = simulate(theta, eta, tao, w, all_is, js, dt)
 		rounds=rounds-1
 		#average the weights over the different rounds
-		weights = weights + w/num_rounds;
+		weights = np.add(weights, w/num_rounds);
 	print w
 	plt.clf()
 	plt.plot(i.T,weights.T)
 	plt.savefig('sim2.jpg')
+	y1 = np.dot(all_is[0],weights)
+	y2 = np.dot(all_is[1],weights)
+	y3 = np.dot(all_is[2],weights)
+	y4 = np.dot(all_is[3],weights)
+	y5 = np.dot(all_is[4],weights)
+	print "y1:"+str(y1)
+	print "y2:"+str(y2)
+	print "y3:"+str(y3)
+	print "y4:"+str(y4)
+	print "y5:"+str(y5)
 	return
 
 

@@ -73,6 +73,8 @@ def main():
 	print ""+str(len(ys))
 	plt.clf()
 	plt.plot(zths,ys)
+	plt.ylabel('y')
+	plt.xlabel('z')
 	plt.savefig('sim1.jpg')
 
 	return
