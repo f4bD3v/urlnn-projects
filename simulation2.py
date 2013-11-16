@@ -42,7 +42,7 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
  		#if ct > 1000:
  		    #print "deltaw: "+str(w)
  		 
- 		if all([abs(dw)<1E-5 for dw in deltaw]):            #corrected here: absolute value
+ 		if all([abs(dw)<1E-12 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
