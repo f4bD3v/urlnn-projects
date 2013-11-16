@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def simulation(theta, eta, tao, w, x, dt,zi):
 	deltaw = 1
-	while abs(deltaw)>1E-5:
+	while abs(deltaw)>1E-12:
 	        z=random.random()
 	        if z>zi:
 		   x=0
