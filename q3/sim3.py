@@ -61,8 +61,9 @@ def main():
 	img_arrs = [np.array(Image.open(img)) for img in imgs]
 
 	mus = [np.mean(img) for img in img_arrs]
-	sigmas = [pow(np.std(img),2) for img in img_arrs]
+	sigmas = [np.std(img) for img in img_arrs]
 	zmu_norms = [(img_arrs[i]-mus[i])/sigmas[i] for i in range(0,len(img_arrs))]
+	print zmu_norms
 	# would have been cleaner using scikit
 
 	# using scikit package for easy patch extraction
@@ -70,7 +71,7 @@ def main():
 	patches = np.vstack(patches_list)
 
 	# for each patch compute the activities of the presynaptic cells xij_ON, xij_OFF
-	# from 50000 patches construct 10000 input vectors
+	# from 50000 patches construct 100000 input vectors
 	x_ON_set = pr(patches) 
 	x_OFF_set = nr(patches) 
 

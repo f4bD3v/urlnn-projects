@@ -98,7 +98,7 @@ def main():
 		rounds=rounds-1
 		#average the weights over the different rounds
 		weights = np.add(weights, w/num_rounds);
-	print w
+	print weights
 	plt.clf()
 	plt.plot(i.T,weights.T)
 	plt.savefig('sim21.jpg')
