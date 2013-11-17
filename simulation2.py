@@ -41,18 +41,14 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
  		
  		deltaw=wn-w	
  		 
- 		if all([abs(dw)<1E-50 for dw in deltaw]):            #corrected here: absolute value
+ 		if all([abs(dw)<1E-12 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
 
  		#print "theta: "+str(ntheta)
  		#print "w: "+str(w)
- 		ct = ct+1
- 		if(ct>10000):
- 		     ct = 0
- 		     print(dw)
-        print "iterations:"+str(ct)
+
  	return w
 
 # params
@@ -79,7 +75,7 @@ def main():
 
 	mu_w0 = 3.0
 	sigma_w0 = 1.0 # ^= sd
-	num_rounds = 10
+	num_rounds = 1000
 	rounds = num_rounds
 	
 	weights = np.zeros((100,))
@@ -101,7 +97,7 @@ def main():
 	print w
 	plt.clf()
 	plt.plot(i.T,weights.T)
-	plt.savefig('sim21.jpg')
+	plt.savefig('sim2.jpg')
 	y1 = np.dot(all_is[0],weights)
 	y2 = np.dot(all_is[1],weights)
 	y3 = np.dot(all_is[2],weights)
