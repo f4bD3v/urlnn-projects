@@ -64,6 +64,7 @@ def main():
 	mus = [np.mean(img) for img in img_arrs]
 	sigmas = [np.std(img) for img in img_arrs]
 	zmu_norms = [(img_arrs[i]-mus[i])/sigmas[i] for i in range(0,len(img_arrs))]
+	print zmu_norms
 	# would have been cleaner using scikit
 
 	# using scikit package for easy patch extraction
