@@ -52,7 +52,7 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
  		
  		deltaw=wn-w	
  		 
- 		if all([abs(dw)<1E-50 for dw in deltaw]):            #corrected here: absolute value
+ 		if all([abs(dw)<1E-12 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
@@ -124,27 +124,27 @@ def main():
                 Fs = ret[7]
                 
                 x = rounds
-                t = np.linspace(1,500*len(theta),500,endPoint=True)
+                print "thetat:"+str(thetatime.shape)
                 plt.clf()
-               	plt.plot(t,thetatime)
+               	plt.plot(thetatime)
                	plt.savefig('sim21'+str(x)+'.jpg')
                 plt.clf()
-               	plt.plot(t,y1time)
+               	plt.plot(y1time)
                	plt.savefig('sim22'+str(x)+'.jpg')
                 plt.clf()
-               	plt.plot(t,y2time)
+               	plt.plot(y2time)
                	plt.savefig('sim23'+str(x)+'.jpg')
                 plt.clf()
-               	plt.plot(t,y3time)
+               	plt.plot(y3time)
                	plt.savefig('sim24'+str(x)+'.jpg')
                 plt.clf()
-               	plt.plot(t,y4time)
+               	plt.plot(y4time)
                	plt.savefig('sim25'+str(x)+'.jpg')
                 plt.clf()
-               	plt.plot(t,y5time)
+               	plt.plot(y5time)
                	plt.savefig('sim26'+str(x)+'.jpg')
                	plt.clf()
-               	plt.plot(t,Fs)
+               	plt.plot(Fs)
                	plt.savefig('sim2F'+str(x)+'.jpg')
                	
 		rounds=rounds-1
