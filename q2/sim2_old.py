@@ -19,15 +19,6 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 	unsatisfied = True
 	vf = np.vectorize(f)
 	ct = 0
-	#keep track of the time-varying quantities
-	thetatime = np.empty(0)
-	y1time = np.empty(0)
-    y2time = np.empty(0)
-    y3time = np.empty(0)
-    y4time = np.empty(0)
-    y5time = np.empty(0)
-    ys = np.empty(0)
-    Fs = np.empty(0)
 
 	while unsatisfied:
 		# choose random set of inputs from the five gaussians
@@ -39,8 +30,6 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
 		#print "x:"+str(x)
 		y=f(np.dot(w,x))
 		#print "y:"+str(y)
-		#keep track of the ys
-		ys = np.append(ys,y)
 
 		dtheta=(-theta+pow(y,2))/tao
 		ntheta=theta+dtheta*dt
@@ -52,24 +41,19 @@ def simulate(theta, eta, tao, w, all_is, js, dt):
  		
  		deltaw=wn-w	
  		 
- 		# do not use convergence, try and get feeling of how many iterations to simulate
- 		if all([abs(dw)<1E-12 for dw in deltaw]):            #corrected here: absolute value
+ 		if all([abs(dw)<1E-50 for dw in deltaw]):            #corrected here: absolute value
  			unsatisfied = False
  		theta=ntheta
  		w=wn
 
- 		#calculate some values for time plotting
- 		if ct%500 == 0:
- 		    thetatime = np.append(thetatime,ntheta)
- 		    y1time = np.append(y1time,np.dot(all_is[0],wn))
- 		    y2time = np.append(y2time,np.dot(all_is[1],wn))
- 		    y3time = np.append(y3time,np.dot(all_is[2],wn))
- 		    y4time = np.append(y4time,np.dot(all_is[3],wn))
- 		    y5time = np.append(y5time,np.dot(all_is[4],wn))
- 		    Fs = np.append(Fs,np.mean(np.power(ys,3))/np.sqrt(np.mean(np.power(ys,2))))
+ 		#print "theta: "+str(ntheta)
+ 		#print "w: "+str(w)
  		ct = ct+1
+ 		if(ct>10000):
+ 		     ct = 0
+ 		     print(dw)
         print "iterations:"+str(ct)
- 	return (w,thetatime,y1time,y2time,y3time,y4time,y5time,Fs)
+ 	return w
 
 # params
 
@@ -85,7 +69,7 @@ def main():
 	js = np.linspace(0, 4, 5, endpoint=True)
 
 	mu = [10,30,50,70,90]
-	sigma = 1
+	sigma = 10
 
 	gf = np.vectorize(gaussian, excluded=['mu', 'sigma', 'g_const'])
 	g_const = 1/math.sqrt(2*math.pi*math.pow(sigma,2))
@@ -95,15 +79,14 @@ def main():
 
 	mu_w0 = 3.0
 	sigma_w0 = 1.0 # ^= sd
-	
-	num_rounds = 1000
+	num_rounds = 10
 	rounds = num_rounds
 	
 	weights = np.zeros((100,))
 	print "weight:"+str(weights.shape)
 
 	while rounds > 0:
-		print "Rounds: "+str(rounds)
+	        print "Rounds: "+str(rounds)
 		eta = 5E-2
 		tao = 1E2
 		dt = 1
@@ -111,56 +94,14 @@ def main():
 		w = np.array([np.random.normal(mu_w0, sigma_w0) for elem in i])
 		theta = 2.5
 
-		ret = simulate(theta, eta, tao, w, all_is, js, dt)
-		w = ret[0]
-		thetatime = ret[1]
-		y1time = ret[2]
-    	y2time = ret[3]
-    	y3time = ret[4]
-    	y4time = ret[5]
-    	y5time = ret[6]
-    	Fs = ret[7]
-                
-	    x = rounds
-        print "thetat:"+str(thetatime.shape)
-        plt.clf()
-       	plt.plot(thetatime)
-       	plt.savefig('sim21'+str(x)+'.jpg')
-        plt.clf()
-       	plt.plot(y1time)
-       	plt.savefig('sim22'+str(x)+'.jpg')
-        plt.clf()
-       	plt.plot(y2time)
-       	plt.savefig('sim23'+str(x)+'.jpg')
-        plt.clf()
-       	plt.plot(y3time)
-       	plt.savefig('sim24'+str(x)+'.jpg')
-        plt.clf()
-       	plt.plot(y4time)
-       	plt.savefig('sim25'+str(x)+'.jpg')
-        plt.clf()
-       	plt.plot(y5time)
-       	plt.savefig('sim26'+str(x)+'.jpg')
-       	plt.clf()
-       	plt.plot(Fs)
-       	plt.savefig('sim2F'+str(x)+'.jpg')
-       	
+		w = simulate(theta, eta, tao, w, all_is, js, dt)
 		rounds=rounds-1
 		#average the weights over the different rounds
 		weights = np.add(weights, w/num_rounds);
-		print weights
-	
-	plt.figure(1)
+	print w
 	plt.clf()
 	plt.plot(i.T,weights.T)
-	plt.savefig('sim20.jpg')
-	
-	print y1time
-	print y2time
-	print y3time
-	print y4time
-	print y5time        
-	
+	plt.savefig('sim21.jpg')
 	y1 = np.dot(all_is[0],weights)
 	y2 = np.dot(all_is[1],weights)
 	y3 = np.dot(all_is[2],weights)
@@ -172,6 +113,8 @@ def main():
 	print "y4:"+str(y4)
 	print "y5:"+str(y5)
 	return
+
+
 	
 
 	
