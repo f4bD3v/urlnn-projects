@@ -23,7 +23,6 @@ def train_car():
         
     n_trials = 1000
     n_time_steps = 1000  # maximum time steps for each trial
-    
     for j in arange(n_trials):	
 
         # before every trial, reset the track and the car.
@@ -87,3 +86,65 @@ def show_race(ferrari):
         if monaco.finished is True:
             break
 
+# This function generates the averaged plots for latency and rewards
+def average_trainings():
+    close('all')
+    
+    # create instances of a car and a track
+    monaco = track.track()
+    ferrari = car.car()
+        
+    n_trials = 1000
+    n_time_steps = 1000  # maximum time steps for each trial
+    n_indep_cars = 20.
+    times = zeros(n_trials)
+    rewards = zeros(n_trials)
+    avg_times = zeros(n_trials)
+    avg_rewards = zeros(n_trials)
+    for k in arange(n_indep_cars):
+        for j in arange(n_trials):  
+
+            # before every trial, reset the track and the car.
+            # the track setup returns the initial position and velocity. 
+            (position_0, velocity_0) = monaco.setup()   
+            ferrari.reset()
+            
+            # choose a first action
+            action = ferrari.choose_action(position_0, velocity_0, 0)
+            
+            # iterate over time
+            for i in arange(n_time_steps) : 
+                
+                # the track receives which action was taken and 
+                # returns the new position and velocity, and the reward value.
+                (position, velocity, R) = monaco.move(action)   
+                
+                # the car chooses a new action based on the new states and reward, and updates its parameters
+                action = ferrari.choose_action(position, velocity, R)   
+                
+                # check if the race is over
+                if monaco.finished is True:
+                    break
+            
+            if j%100 == 0:
+                # plots the race result every 100 trials
+                monaco.plot_world()
+                
+            if j%10 == 0:
+                print 'Trial:', j
+
+            times[j] = monaco.time
+            rewards[j] = monaco.total_reward
+        avg_times = avg_times + avg_times/n_indep_cars
+        avg_rewards = avg_rewards + avg_rewards/n_indep_cars
+
+    figure(1)
+    plot(times)
+    ylabel('Latency')
+    xlabel('Trial')
+    show()
+    figure(2)
+    plot(rewards)
+    ylabel('Total reward')
+    xlabel('Trial')
+    show()
