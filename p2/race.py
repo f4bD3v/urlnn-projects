@@ -148,3 +148,48 @@ def average_trainings():
     ylabel('Total reward')
     xlabel('Trial')
     show()
+
+def train_and_show_navigation():
+    close('all')
+    
+    # create instances of a car and a track
+    monaco = track.track()
+    ferrari = car.car()
+        
+    n_trials = 1000
+    n_time_steps = 1000  # maximum time steps for each trial
+    for j in arange(n_trials):  
+
+        # before every trial, reset the track and the car.
+        # the track setup returns the initial position and velocity. 
+        (position_0, velocity_0) = monaco.setup()   
+        ferrari.reset()
+        
+        # choose a first action
+        action = ferrari.choose_action(position_0, velocity_0, 0)
+        
+        # iterate over time
+        for i in arange(n_time_steps) : 
+            
+            # the track receives which action was taken and 
+            # returns the new position and velocity, and the reward value.
+            (position, velocity, R) = monaco.move(action)   
+            
+            # the car chooses a new action based on the new states and reward, and updates its parameters
+            action = ferrari.choose_action(position, velocity, R)   
+            
+            # check if the race is over
+            if monaco.finished is True:
+                break
+        
+        if j%100 == 0:
+            # plots the race result every 100 trials
+            monaco.plot_world()
+            
+        if j%10 == 0:
+            print 'Trial:', j
+
+        if j == 0 or j == 50 or j==100 or j==250 or j==500 or j==750 or j==999:
+            ferrari.plot_navigation(j+1)
+
+    return ferrari #returns a trained car
