@@ -17,10 +17,9 @@ class car:
         self.sigmav = 0.2
         self.posGridDist = 1./30
         self.velGridDist = 1./30
-        self.old_q= None        
-        self.old_rp = None
-        self.old_rv = None
-        self.old_action = None
+        self.gamma = 0.95
+        self.eta = 0.005
+        self.lambdaa = 0.95
 
     def reset(self) :
     
@@ -28,9 +27,6 @@ class car:
         
         self.time = 0
         self.eligibility_trace = zeros((self.n_actions,self.n_neurons))
-        self.gamma = 0.95
-        self.eta = 0.005
-        self.lambdaa = 0.95
         self.old_q = None
         self.old_rp = None
         self.old_rv = None
