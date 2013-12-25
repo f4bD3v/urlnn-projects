@@ -86,6 +86,34 @@ def show_race(ferrari):
         if monaco.finished is True:
             break
 
+def show_race_no_rand(ferrari):
+    close('all')
+
+    # create instances of a track
+    monaco = track.track()
+
+    n_time_steps = 1000  # maximum time steps
+    
+    # choose to plot every step and start from defined position
+    (position_0, velocity_0) = monaco.setup(plotting=True)  
+    ferrari.reset()
+
+    # choose a first action
+    action = ferrari.choose_action_no_rand(position_0, velocity_0, 0)
+
+    # iterate over time
+    for i in arange(n_time_steps) : 
+
+        # inform your action
+        (position, velocity, R) = monaco.move(action)   
+
+        # choose new action, with learning turned off
+        action = ferrari.choose_action_no_rand(position, velocity, R, learn=False)  
+
+        # check if the race is over
+        if monaco.finished is True:
+            break
+
 # This function generates the averaged plots for latency and rewards
 def average_trainings():
     close('all')
@@ -158,6 +186,8 @@ def train_and_show_navigation():
         
     n_trials = 1000
     n_time_steps = 1000  # maximum time steps for each trial
+    ferrari.reset()
+    ferrari.plot_navigation(0)
     for j in arange(n_trials):  
 
         # before every trial, reset the track and the car.
