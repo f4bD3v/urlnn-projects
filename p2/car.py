@@ -109,6 +109,7 @@ class car:
 
         quiver([i/float(xx) for i in range(xx+1)], [i/float(xx+1) for i in range(xx+1)],x_dir,y_dir)
         axis([-0.1,1.1,-0.1,1.1])
+        draw()
         show()
 
     def choose_action_no_rand(self, position, velocity, R, learn = True):
