@@ -261,7 +261,7 @@ def train_and_show_navigation():
     monaco = track.track()
     ferrari = car.car()
         
-    n_trials = 1000
+    n_trials = 2000
     n_time_steps = 1000  # maximum time steps for each trial
     ferrari.reset()
     ferrari.plot_navigation(0)
@@ -296,7 +296,11 @@ def train_and_show_navigation():
         if j%10 == 0:
             print 'Trial:', j
 
-        if j == 0 or j == 50 or j==100 or j==250 or j==500 or j==750 or j==999:
-            ferrari.plot_navigation(j+1)
+        if j == 0 or j == 50 or j==100 or j==250 or j==500 or j==750 or j==999 or j==1250 or j==1500 or j==1750 or j==1999:
+            figure(j+1)
+            xlim(-0.1,1.1)
+            ylim(-0.1,1.1)
+            monaco.plot_track()
+            ferrari.plot_navigation()
 
     return ferrari #returns a trained car
