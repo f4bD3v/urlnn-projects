@@ -130,6 +130,8 @@ def average_trainings():
     avg_times = zeros(n_trials)
     avg_rewards = zeros(n_trials)
     for k in arange(n_indep_cars):
+        monaco = track.track()
+        ferrari = car.car()
         for j in arange(n_trials):  
 
             # before every trial, reset the track and the car.
@@ -159,7 +161,7 @@ def average_trainings():
                 monaco.plot_world()
                 
             if j%10 == 0:
-                print 'Trial:', j
+                print k, 'Trial:', j
 
             times[j] = monaco.time
             rewards[j] = monaco.total_reward
