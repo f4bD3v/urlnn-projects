@@ -56,7 +56,6 @@ class car:
     	qact = qs[action] #Q corresponding to the taken action
         
         if learn and self.old_action != None:   
-            # I am anything but certain about this. I don't really get the s' and a' stuff :S
             #calculate TD error
             delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
@@ -123,7 +122,6 @@ class car:
         qact = qs[action] #Q corresponding to the taken action
         
         if learn and self.old_action != None:   
-            # I am anything but certain about this. I don't really get the s' and a' stuff :S
             #calculate TD error
             delta = R - (self.old_q - self.gamma*qact)
             #update eligibility trace
@@ -141,7 +139,49 @@ class car:
         return action        
 
     def choose_action_softmax(self, position, velocity, R, learn = True):
+        posx,posy = position[0],position[1]
+        velx,vely = velocity[0],velocity[1]
 
+        rp = [math.exp(-(math.pow(posx-(j%31)*self.posGridDist,2) + math.pow(posy-(int(j/31))*self.posGridDist,2))/2/math.pow(self.sigmap,2)) for j in range(961)]
+        rv = [math.exp(-(math.pow(velx-(j%31)*self.velGridDist,2) + math.pow(vely-(int(j/31))*self.velGridDist,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
+        qs = [dot(self.weights[i,0:961],rp) + dot(self.weights[i,961:1082],rv) for i in range(9)]
+        
+        '''
+            SOFT max
+        '''
+
+        # tau - temperature coefficient - low temperature causes all actions to be equiprobable
+        tau = .01 # increase to 1 for exploitation
+        pas = np.exp(tau*qacts)/np.sum(np.exp(tau*qacts))
+
+        u = rand()
+
+        cpf = [np.sum(pas[0:i+1]) for i in range(pas.shape[0])]
+
+        for i in range(len(cpf)):
+            cp = cpf[i]
+            if u <= cp:
+               action = i 
+               break
+
+        action = qs.index(max(qs))
+        qact = qs[action] #Q corresponding to the taken action
+        
+        if learn and self.old_action != None:   
+            #calculate TD error
+            delta = R - (self.old_q - self.gamma*qact)
+            #update eligibility trace
+            self.eligibility_trace = self.eligibility_trace*self.lambdaa*self.gamma
+            self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
+            #update weights
+            self.weights += self.eta*delta*self.eligibility_trace
+        
+        self.old_rv = rv
+        self.old_rp = rp
+        self.old_action = action
+        self.old_q = qact  
+        self.time += 1
+        
         return action
 
 
