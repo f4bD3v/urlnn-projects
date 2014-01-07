@@ -16,14 +16,13 @@ class car:
         self.sigmav = 0.2
         self.posGridDist = 1./30 #Since it goes from 0 to 1, with 31 samples
         self.velGridDist = 0.2 #going from -1 to 1, with 11 samples
-        self.gamma = 0.95
-        self.eta = 0.005
-        self.lambdaa = 0.95
+        self.gamma = 0.95 # discount factor
+        self.eta = 0.005 # learning rate
+        self.lambdaa = 0.95 # eligibility trace decay rate
 
     def reset(self) :
     
         # reset values before each trial.
-        
         self.time = 0
         self.eligibility_trace = zeros((self.n_actions,self.n_neurons))
         self.old_q = None
@@ -59,10 +58,10 @@ class car:
         if learn and self.old_action != None:   
             # I am anything but certain about this. I don't really get the s' and a' stuff :S
             #calculate TD error
-            delta = R - self.old_q + self.gamma*qact
+            delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
-            #Some slides reverse the order of the following two lines. I opted for this one since now at least once the reward is accounted fully.
             self.eligibility_trace = self.eligibility_trace*self.lambdaa*self.gamma
+            #add activation for action a (how to get state s?, have to get neuron for location s)
             self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
             #update weights
             self.weights += self.eta*delta*self.eligibility_trace
@@ -141,7 +140,9 @@ class car:
 
         return action        
 
+    def choose_action_softmax(self, position, velocity, R, learn = True):
 
+        return action
 
 
 
