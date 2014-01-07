@@ -165,16 +165,16 @@ def average_trainings():
 
             times[j] = monaco.time
             rewards[j] = monaco.total_reward
-        avg_times = avg_times + avg_times/n_indep_cars
-        avg_rewards = avg_rewards + avg_rewards/n_indep_cars
+        avg_times = avg_times + times/n_indep_cars
+        avg_rewards = avg_rewards + rewards/n_indep_cars
 
     figure(1)
-    plot(times)
+    plot(avg_times)
     ylabel('Latency')
     xlabel('Trial')
     show()
     figure(2)
-    plot(rewards)
+    plot(avg_rewards)
     ylabel('Total reward')
     xlabel('Trial')
     show()
