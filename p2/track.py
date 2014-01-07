@@ -243,6 +243,26 @@ class track:
         # the [vx,vy] velocity values are returned as a value between -1 and 1, where 1 means maximum velocity.
         # the [x,y] position values are always between 0 and 1.
         return self.pos, self.vel/self.max_vel, rew
+
+    def plot_track(self):
+        # plots the track on the existing figure
+        
+        plot([0,0],[0,1],lw=2,c='r')
+        plot([0,1],[1,1],lw=2,c='r')
+        plot([1,1],[1,0],lw=2,c='r')
+        plot([0,1],[0,0],lw=2,c='r')
+        
+        for wall in self.walls:
+            plot([wall[0,0],wall[1,0]],
+                 [wall[0,1],wall[1,1]],lw=2,c='r')
+        
+        for contour in self.contours:
+            plot(contour[0],contour[1](contour[0]), color='r')
+        
+        plot([self.finish_line[0,0], self.finish_line[1,0]], 
+             [self.finish_line[0,1], self.finish_line[1,1]], color='r', ls='--', lw=5)
+        
+        draw()
         
         
     

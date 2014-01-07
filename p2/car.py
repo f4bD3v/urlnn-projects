@@ -76,16 +76,15 @@ class car:
     	return action
 
 
-    def plot_navigation(self,figNum):
-        figure(figNum)
+    def plot_navigation(self):
         scale = 3
         xx = 50
-        x_dir = zeros((xx,xx))
-        y_dir = zeros((xx,xx))
-        actions = zeros((xx,xx))
-        rv = [math.exp(-(math.pow(0-(j%31)*self.velGridDist,2) + math.pow(0-(int(j/31))*self.velGridDist,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
-        for l in range(xx):
-            for k in range(xx):
+        x_dir = zeros((xx+1,xx+1))
+        y_dir = zeros((xx+1,xx+1))
+        actions = zeros((xx+1,xx+1))
+        rv = [math.exp(-(math.pow(0-(j%11)*self.velGridDist-1,2) + math.pow(0-(int(j/11))*self.velGridDist-1,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
+        for l in range(xx+1):
+            for k in range(xx+1):
                 rp = [math.exp(-(math.pow(l/float(xx)-(j%31)*self.posGridDist,2) + math.pow(k/float(xx)-(int(j/31))*self.posGridDist,2))/2/math.pow(self.sigmap,2)) for j in range(961)]
                 qs = [dot(self.weights[i,0:961],rp) + dot(self.weights[i,961:1082],rv) for i in range(9)]
                 actions[k,l] = qs.index(max(qs))
@@ -107,8 +106,9 @@ class car:
         y_dir[actions == 7] = 0.707*scale
         x_dir[actions == 8] = 0*scale
         y_dir[actions == 8] = 1*scale
-        quiver(x_dir,y_dir)
-        axis([-1,51,-1,51])
+
+        quiver([i/float(xx) for i in range(xx+1)], [i/float(xx+1) for i in range(xx+1)],x_dir,y_dir)
+        axis([-0.1,1.1,-0.1,1.1])
         show()
 
     def choose_action_no_rand(self, position, velocity, R, learn = True):
