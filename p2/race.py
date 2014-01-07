@@ -191,59 +191,58 @@ def average_trainings_last_trials(eps, decrease=False):
     n_time_steps = 1000  # maximum time steps for each trial
     n_indep_cars = 20.
     times = zeros(n_trials)
-    rewards = zeros(n_trials)
     avg_times = zeros(n_trials)
     avg_rewards = zeros(n_trials)
-    for k in arange(n_indep_cars):
-        monaco = track.track()
-        ferrari = car.car()
-        for j in arange(n_trials):  
-            eps = eps_init
-            # before every trial, reset the track and the car.
-            # the track setup returns the initial position and velocity. 
-            (position_0, velocity_0) = monaco.setup()   
-            ferrari.reset()
-            
-            # choose a first action
-            action = ferrari.choose_action(position_0, velocity_0, 0, eps)
-            
-            # iterate over time
-            for i in arange(n_time_steps): 
-                
-                # the track receives which action was taken and 
-                # returns the new position and velocity, and the reward value.
-                (position, velocity, R) = monaco.move(action)   
-                
-                # the car chooses a new action based on the new states and reward, and updates its parameters
-                if decrease and j != 0 and j%(n_time_steps/10) == 0:
-                    eps -= .095
 
-                action = ferrari.choose_action(position, velocity, R, eps)   
-                
-                # check if the race is over
-                if monaco.finished is True:
-                    break
+    for j in arange(n_trials):  
+        eps = eps_init
+        # before every trial, reset the track and the car.
+        # the track setup returns the initial position and velocity. 
+        (position_0, velocity_0) = monaco.setup()   
+        ferrari.reset()
+        
+        # choose a first action
+        action = ferrari.choose_action(position_0, velocity_0, 0, eps)
+        
+        # iterate over time
+        for i in arange(n_time_steps): 
             
-            if j%10 == 0:
-                print k, 'Trial:', j
+            # the track receives which action was taken and 
+            # returns the new position and velocity, and the reward value.
+            (position, velocity, R) = monaco.move(action)   
+            
+            # the car chooses a new action based on the new states and reward, and updates its parameters
+            if decrease and j != 0 and j%(n_time_steps/10) == 0:
+                eps -= .095
 
-            if n_trials - j <= 10:
-                times[j] = monaco.time
-                rewards[j] = monaco.total_reward
+            action = ferrari.choose_action(position, velocity, R, eps)   
+            
+            # check if the race is over
+            if monaco.finished is True:
+                break
+        
+        if j%10 == 0:
+            print k, 'Trial:', j
 
-        avg_times = avg_times + avg_times/n_indep_cars
-        avg_rewards = avg_rewards + avg_rewards/n_indep_cars
+        times[j] = monaco.time
+        rewards[j] = monaco.total_reward
+
+        #avg_times = avg_times + times/n_indep_cars
+        #avg_rewards = avg_rewards + avg_rewards/n_indep_cars
+
+    avgtime_lasttrials = times[-10:]/10;
 
     figure(1)
     plot(times)
     ylabel('Latency')
     xlabel('Trial')
-    out_str = n_indep_cars+'cars_average_times_'+str(eps)+'.png'
+    out_str = 'one_car_latency'+str(eps)+'_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
     if decrease:
-        out_str = n_indep_cars+'cars_average_times_'+str(eps)+'_decreasing.png'
+        out_str = n_indep_cars+'one_car_latency_'+str(eps)+'_decreasing_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
 
-    savefig(n_indep_cars+'cars_average_times_'+str(eps)+'.png')
+    savefig(out_str)
 
+    '''
     figure(2)
     plot(rewards)
     ylabel('Total reward')
@@ -253,6 +252,7 @@ def average_trainings_last_trials(eps, decrease=False):
         out_str = n_indep_cars+'cars_average_rewards_'+str(eps)+'_decreasing.png'
 
     savefig(n_indep_cars+'cars_average_rewards_'+str(eps)+'.png')
+    '''
 
 def train_and_show_navigation():
     close('all')
