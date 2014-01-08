@@ -1,5 +1,6 @@
 import race 
 from pylab import *
+from multiprocessing import Pool
 
 eps_list = [0.5, 0.7, 0.9]
 colors = ["red", "green", "blue", "yellow"]
