@@ -187,9 +187,9 @@ def average_trainings_last_trials(eps, decrease=False):
     monaco = track.track()
     ferrari = car.car()
         
-    n_trials = 1000
+    n_trials = 1
     n_time_steps = 1000  # maximum time steps for each trial
-    n_indep_cars = 5.
+    n_indep_cars = 1.
     times = zeros(n_trials)
     avg_times = zeros(n_trials)
 
@@ -267,7 +267,11 @@ def train_and_show_navigation():
     n_trials = 2000
     n_time_steps = 1000  # maximum time steps for each trial
     ferrari.reset()
-    ferrari.plot_navigation(0)
+    figure(0)
+    xlim(-0.1,1.1)
+    ylim(-0.1,1.1)
+    monaco.plot_track()
+    ferrari.plot_navigation()
     for j in arange(n_trials):  
 
         # before every trial, reset the track and the car.
