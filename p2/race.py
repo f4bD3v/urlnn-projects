@@ -189,7 +189,7 @@ def average_trainings_last_trials(eps, decrease=False):
         
     n_trials = 1000
     n_time_steps = 1000  # maximum time steps for each trial
-    n_indep_cars = 5 
+    n_indep_cars = 5.
     times = zeros(n_trials)
     avg_times = zeros(n_trials)
 
@@ -225,7 +225,7 @@ def average_trainings_last_trials(eps, decrease=False):
                     break
             
             if j%10 == 0:
-                print 'Trial:', j
+                print 'Eps:',eps,'Car:',k, 'Trial:', j
 
             times[j] = monaco.time
 
