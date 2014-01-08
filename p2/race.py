@@ -187,9 +187,9 @@ def average_trainings_last_trials(eps, decrease=False):
     monaco = track.track()
     ferrari = car.car()
         
-    n_trials = 1
-    n_time_steps = 1000  # maximum time steps for each trial
-    n_indep_cars = 1.
+    n_trials = 1000
+    n_time_steps = 1000 # maximum time steps for each trial
+    n_indep_cars = 5.
     times = zeros(n_trials)
     avg_times = zeros(n_trials)
 
@@ -224,8 +224,8 @@ def average_trainings_last_trials(eps, decrease=False):
                 if monaco.finished is True:
                     break
             
-            if j%10 == 0:
-                print 'Eps:',eps,'Car:',k, 'Trial:', j
+            #if j%10 == 0:
+            print 'Eps:',eps,'Car:',k, 'Trial:', j
 
             times[j] = monaco.time
 
