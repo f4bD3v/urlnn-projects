@@ -7,7 +7,7 @@ colors = ["red", "green", "blue", "yellow", "black"]
 
 eps_times = np.zeros((len(eps_list), 1000))
 
-p = Pool(5)
+p = Pool(4)
 eps_times = p.map(race.average_trainings_last_trials, eps_list)
 
 '''
