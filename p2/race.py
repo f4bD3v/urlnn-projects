@@ -189,7 +189,7 @@ def average_trainings_last_trials(eps, decrease=False):
         
     n_trials = 1000
     n_time_steps = 1000  # maximum time steps for each trial
-    n_indep_cars = 10.
+    n_indep_cars = 5 
     times = zeros(n_trials)
     avg_times = zeros(n_trials)
 
@@ -214,10 +214,10 @@ def average_trainings_last_trials(eps, decrease=False):
                 # returns the new position and velocity, and the reward value.
                 (position, velocity, R) = monaco.move(action)   
                 
-                # the car chooses a new action based on the new states and reward, and updates its parameters
-                if decrease and j != 0 and j%(n_time_steps/10) == 0:
-                    eps -= .095
+                if decrease:
+                    eps=0.5*math.exp(-i*0.0025)
 
+                # the car chooses a new action based on the new states and reward, and updates its parameters
                 action = ferrari.choose_action(position, velocity, R, eps)   
                 
                 # check if the race is over
@@ -237,9 +237,9 @@ def average_trainings_last_trials(eps, decrease=False):
     plot(avg_times)
     ylabel('Latency')
     xlabel('Trial')
-    out_str = n_indep_cars+'_latency'+str(eps)+'_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
+    out_str = str(n_indep_cars)+'_latency'+str(eps)+'_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
     if decrease:
-        out_str = n_indep_cars+'_latency'+str(eps)+'_decreasing_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
+        out_str = str(n_indep_cars)+'_latency'+str(eps)+'_decreasing_avgtime_lasttrials'+str(avgtime_lasttrials)+'.png'
 
     savefig(out_str)
 
