@@ -5,8 +5,6 @@ from multiprocessing import Pool
 eps_list = [0.1, 0.3, 0.6, 0.9]
 colors = ["red", "green", "blue", "yellow", "black"]
 
-eps_times = np.zeros((len(eps_list), 1000))
-
 p = Pool(4)
 eps_times = p.map(race.average_trainings_last_trials, eps_list)
 

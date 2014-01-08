@@ -232,7 +232,6 @@ def average_trainings_last_trials(eps, decrease=False):
         avg_times = avg_times + times/n_indep_cars
 
     avgtime_lasttrials = sum(avg_times[-10:])/10;
-    save(avg_times)
 
     figure(1)
     plot(avg_times)
