@@ -34,10 +34,12 @@ class car:
         self.old_rv = None
         self.old_action = None
 
-    def eval_activation(self, x, y, xgrid, ygrid, sigma):
-        r = np.exp(- (((x-xgrid)**2) + ((y-ygrid)**2) ) / (2.*(sigma**2)))
-        #print r.flatten()
-        return r.flatten()
+    def eval_activities(self, posx, posy, xgrid, ygrid, sigma):
+        activities = lambda x,y: np.exp(- (((posx-x)**2) + ((posy-y)**2) ) / (2.*(sigma**2)))
+
+        r = activities(xgrid.flatten(), ygrid.flatten())
+
+        return r
 
     def choose_action(self, position, velocity, R, learn = True):
         # This method must:
@@ -51,8 +53,8 @@ class car:
         posx,posy = position[0],position[1]
         velx,vely = velocity[0],velocity[1]
 
-        rp = self.eval_activation(posx, posy, self.p_gridx, self.p_gridy, self.sigmap)
-        rv = self.eval_activation(velx, vely, self.v_gridx, self.v_gridy, self.sigmav)
+        rp = self.eval_activities(posx, posy, self.p_gridx, self.p_gridy, self.sigmap)
+        rv = self.eval_activities(velx, vely, self.v_gridx, self.v_gridy, self.sigmav)
         rs = np.concatenate((rp,rv))
         #print rs
 
@@ -168,6 +170,8 @@ class car:
         # tau - temperature coefficient - low temperature causes all actions to be equiprobable
         tau = .01 # increase to 1 for exploitation
         pas = exp(tau*qacts)/sum(exp(tau*qacts))
+
+        eps=0.5*math.exp(-self.time*0.0025)
 
         u = rand()
 
