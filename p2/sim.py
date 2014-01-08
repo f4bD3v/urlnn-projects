@@ -7,6 +7,6 @@ for eps in eps_list:
 	#race.show_race()
 
 eps = .9
-final_car = race.average_trainings_last_trials(eps, true)
+final_car = race.average_trainings_last_trials(eps, True)
 
 # plot several learning curves for different values of eps quantify the performance by averaging the latencies in the last 10 trials	

@@ -152,11 +152,11 @@ class car:
 
         # tau - temperature coefficient - low temperature causes all actions to be equiprobable
         tau = .01 # increase to 1 for exploitation
-        pas = np.exp(tau*qacts)/np.sum(np.exp(tau*qacts))
+        pas = exp(tau*qacts)/sum(exp(tau*qacts))
 
         u = rand()
 
-        cpf = [np.sum(pas[0:i+1]) for i in range(pas.shape[0])]
+        cpf = [sum(pas[0:i+1]) for i in range(pas.shape[0])]
 
         for i in range(len(cpf)):
             cp = cpf[i]
