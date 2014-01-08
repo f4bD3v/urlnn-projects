@@ -188,7 +188,7 @@ def average_trainings_last_trials(eps, decrease):
         
     n_trials = 1000
     n_time_steps = 1000 # maximum time steps for each trial
-    n_indep_cars = 2.
+    n_indep_cars = 5.
     times = zeros(n_trials)
     avg_times = zeros(n_trials)
 

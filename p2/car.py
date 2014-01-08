@@ -74,10 +74,11 @@ class car:
             delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
 
-            self.eligibility_trace[self.old_action,:] += self.old_rs
+            self.weights += self.eta*delta*self.eligibility_trace
+            
+            self.eligibility_trace[action,:] += rs
             self.eligibility_trace *= self.lambdaa*self.gamma
 
-            self.weights += self.eta*delta*self.eligibility_trace
             #update weights
     	
         self.old_rs = rs
