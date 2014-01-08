@@ -4,12 +4,11 @@ import math
 
 class car:
    
-    def __init__(self):
+    def __init__(self, eps=.1, decrease_eps=False):
         # setup your parameters here.
         self.n_actions = 9
         self.n_neurons = 1082
         self.weights = zeros((self.n_actions,self.n_neurons))
-        self.epsilon = 0.1
         self.qs = zeros(self.n_actions)
         self.sigmap = 1./30
         self.sigmav = 0.2
@@ -22,6 +21,8 @@ class car:
         vel_cells = np.linspace(-1,1,11)
         self.p_gridx, self.p_gridy = np.meshgrid(place_cells,place_cells)
         self.v_gridx, self.v_gridy = np.meshgrid(vel_cells, vel_cells)
+        self.epsilon = eps
+        self.decrease=decrease_eps
 
 
     def reset(self) :
@@ -83,6 +84,9 @@ class car:
         self.old_action = action
         self.old_q = qact  
     	self.time += 1
+
+        if self.decrease:
+            eps=0.5*math.exp(-self.time*0.0025)
 
     	return action
 
@@ -200,22 +204,19 @@ class car:
         
         return action
 
-
+'''
 def choose_action_eps(self, position, velocity, R, eps, learn = True):
-        # This method must:
-        # -choose your action based on the current position and velocity.
-        # -update your parameters according to SARSA. This step can be turned off by the parameter 'learn=False'.
-        #
-        # The [x,y] values of the position are always between 0 and 1.
-        # The [vx,vy] values of the velocity are always between -1 and 1.
-        # The reward from the last action R is a real number
+        self.epsilon = eps
 
         posx,posy = position[0],position[1]
         velx,vely = velocity[0],velocity[1]
 
-        rp = [math.exp(-(math.pow(posx-(j%31)*self.posGridDist,2) + math.pow(posy-(int(j/31))*self.posGridDist,2))/2/math.pow(self.sigmap,2)) for j in range(961)]
-        rv = [math.exp(-(math.pow(velx-(j%11)*self.velGridDist-1,2) + math.pow(vely-(int(j/11))*self.velGridDist-1,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
-        qs = [dot(self.weights[i,0:961],rp) + dot(self.weights[i,961:1082],rv) for i in range(9)]
+        rp = self.eval_activities(posx, posy, self.p_gridx, self.p_gridy, self.sigmap)
+        rv = self.eval_activities(velx, vely, self.v_gridx, self.v_gridy, self.sigmav)
+        rs = np.concatenate((rp,rv))
+        #print rs
+
+        qs = dot(self.weights,rs)
         
         if(rand()<self.epsilon):
             action = int(rand()*9)  
@@ -223,31 +224,25 @@ def choose_action_eps(self, position, velocity, R, eps, learn = True):
             #action that leads to maximal Q
             #one could incorporate here a random choice when multiple entries have the same value. 
             #However, this is a marginal case since we're working with continuous variables and hence that wouldn't change too much.
-            action = qs.index(max(qs))
+            action = np.argmax(qs)
         qact = qs[action] #Q corresponding to the taken action
         
-        if learn and self.old_action != None:   
+        if learn:   
             #calculate TD error
             delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
-            self.eligibility_trace = self.eligibility_trace*self.lambdaa*self.gamma
-            #add activation for action a (how to get state s?, have to get neuron for location s)
-            self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
-            #update weights
+
+            self.eligibility_trace[self.old_action,:] += self.old_rs
+            self.eligibility_trace *= self.lambdaa*self.gamma
+
             self.weights += self.eta*delta*self.eligibility_trace
+            #update weights
         
-        self.old_rv = rv
-        self.old_rp = rp
+        self.old_rs = rs
         self.old_action = action
         self.old_q = qact  
         self.time += 1
 
         return action
-
-
-
-
-
-
-
+'''
        
