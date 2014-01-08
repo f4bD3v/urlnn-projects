@@ -11,7 +11,7 @@ eps_times=np.zeros((len(eps_list),1000))
 for i in range(len(eps_list)):
 	print i
 	eps = eps_list[i]
-	avg_times = race.average_trainings_last_trials(eps)
+	avg_times = race.average_trainings_last_trials(eps, False)
 	eps_times[i,:]=avg_times
 	#race.show_race()
 

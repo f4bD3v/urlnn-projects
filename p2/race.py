@@ -180,12 +180,11 @@ def average_trainings():
     show()
 
 # This function generates the averaged plots for latency and rewards FOR THE LAST 10 trials
-def average_trainings_last_trials(eps, decrease=False):
+def average_trainings_last_trials(eps, decrease):
     close('all')
-    eps_init = eps 
     # create instances of a car and a track
     monaco = track.track()
-    ferrari = car.car()
+    ferrari = car.car(eps, decrease)
         
     n_trials = 1000
     n_time_steps = 1000 # maximum time steps for each trial
@@ -198,14 +197,13 @@ def average_trainings_last_trials(eps, decrease=False):
         ferrari = car.car()
       
         for j in arange(n_trials):  
-            eps = eps_init
             # before every trial, reset the track and the car.
             # the track setup returns the initial position and velocity. 
             (position_0, velocity_0) = monaco.setup()   
             ferrari.reset()
             
             # choose a first action
-            action = ferrari.choose_action(position_0, velocity_0, 0, eps)
+            action = ferrari.choose_action(position_0, velocity_0, 0)
             
             # iterate over time
             for i in arange(n_time_steps): 
@@ -214,11 +212,9 @@ def average_trainings_last_trials(eps, decrease=False):
                 # returns the new position and velocity, and the reward value.
                 (position, velocity, R) = monaco.move(action)   
                 
-                if decrease:
-                    eps=0.5*math.exp(-i*0.0025)
 
                 # the car chooses a new action based on the new states and reward, and updates its parameters
-                action = ferrari.choose_action(position, velocity, R, eps)   
+                action = ferrari.choose_action(position, velocity, R)   
                 
                 # check if the race is over
                 if monaco.finished is True:
