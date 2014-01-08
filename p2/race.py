@@ -194,7 +194,7 @@ def average_trainings_last_trials(eps, decrease):
 
     for k in arange(n_indep_cars):
         monaco = track.track()
-        ferrari = car.car()
+        ferrari = car.car(eps, decrease)
       
         for j in arange(n_trials):  
             # before every trial, reset the track and the car.

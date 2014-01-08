@@ -22,7 +22,7 @@ for i in range(len(eps_list)):
 ylabel('Latency')
 xlabel('Trial')
 out_str = '5_cars_latency'+str(eps)+'_avgtime_lasttrials.png'
-plt.legend(loc='lower center')
+plt.legend(loc='upper right')
 savefig(out_str)
 
 # plot several learning curves for different values of eps quantify the performance by averaging the latencies in the last 10 trials	

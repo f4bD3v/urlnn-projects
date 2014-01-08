@@ -21,9 +21,11 @@ class car:
         vel_cells = np.linspace(-1,1,11)
         self.p_gridx, self.p_gridy = np.meshgrid(place_cells,place_cells)
         self.v_gridx, self.v_gridy = np.meshgrid(vel_cells, vel_cells)
+        self.epsilon_init = eps
         self.epsilon = eps
+        print decrease_eps
         self.decrease=decrease_eps
-
+        print self.decrease
 
     def reset(self) :
     
@@ -42,6 +44,9 @@ class car:
         return r
 
     def choose_action(self, position, velocity, R, learn = True):
+
+        if self.decrease:
+            self.epsilon=self.epsilon_init*0.5*math.exp(-self.time*0.0025)
         # This method must:
         # -choose your action based on the current position and velocity.
         # -update your parameters according to SARSA. This step can be turned off by the parameter 'learn=False'.
@@ -85,9 +90,6 @@ class car:
         self.old_action = action
         self.old_q = qact  
     	self.time += 1
-
-        if self.decrease:
-            eps=0.5*math.exp(-self.time*0.0025)
 
     	return action
 
