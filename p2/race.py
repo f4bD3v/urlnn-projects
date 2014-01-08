@@ -224,8 +224,8 @@ def average_trainings_last_trials(eps, decrease=False):
                 if monaco.finished is True:
                     break
             
-            #if j%10 == 0:
-            print 'Eps:',eps,'Car:',k, 'Trial:', j
+            if j%10 == 0:
+                print 'Eps:',eps,'Car:',k, 'Trial:', j
 
             times[j] = monaco.time
 
