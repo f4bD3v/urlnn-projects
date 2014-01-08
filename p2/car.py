@@ -97,12 +97,15 @@ class car:
         x_dir = zeros((xx+1,xx+1))
         y_dir = zeros((xx+1,xx+1))
         actions = zeros((xx+1,xx+1))
-        rv = [math.exp(-(math.pow(0-(j%11)*self.velGridDist-1,2) + math.pow(0-(int(j/11))*self.velGridDist-1,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
+        rv = self.eval_activities(0, 0, self.v_gridx, self.v_gridy, self.sigmav)
+        
         for l in range(xx+1):
             for k in range(xx+1):
-                rp = [math.exp(-(math.pow(l/float(xx)-(j%31)*self.posGridDist,2) + math.pow(k/float(xx)-(int(j/31))*self.posGridDist,2))/2/math.pow(self.sigmap,2)) for j in range(961)]
-                qs = [dot(self.weights[i,0:961],rp) + dot(self.weights[i,961:1082],rv) for i in range(9)]
-                actions[k,l] = qs.index(max(qs))
+                rp = self.eval_activities(l/float(xx), k/float(xx), self.p_gridx, self.p_gridy, self.sigmap)
+                rs = np.concatenate((rp,rv))
+                qs = dot(self.weights,rs)
+                actions[k,l] = np.argmax(qs)
+
         x_dir[actions == 0] = 0*scale
         y_dir[actions == 0] = 0*scale
         x_dir[actions == 1] = 0.707*scale
