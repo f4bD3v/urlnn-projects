@@ -243,6 +243,8 @@ def average_trainings_last_trials(eps, decrease=False):
 
     savefig(out_str)
 
+    return avg_times
+
     '''
     figure(2)
     plot(rewards)
