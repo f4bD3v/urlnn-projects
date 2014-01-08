@@ -2,7 +2,7 @@ import race
 from pylab import *
 from multiprocessing import Pool
 
-eps_list = [0.5, 0.7, 0.9]
+eps_list = [1, 0.9, 0.7]
 colors = ["red", "green", "blue", "yellow"]
 
 #p = Pool(3)
@@ -18,7 +18,7 @@ for i in range(len(eps_list)):
 
 figure(1)
 
-for i in len(eps_list):
+for i in range(len(eps_list)):
 	plot(eps_times[i,:], color=colors[i], linewidth=1.0, linestyle='-', label="epsilon: "+str(eps_list[i]))
 
 ylabel('Latency')

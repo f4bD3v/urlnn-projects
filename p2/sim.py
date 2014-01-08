@@ -2,7 +2,7 @@ import race
 from pylab import *
 from multiprocessing import Pool
 
-eps_list = [0.1, 0.3, 0.6, 0.9]
+eps_list = [0.1, 0.3, 0.5, 0.7]
 colors = ["red", "green", "blue", "yellow", "black"]
 
 eps_times=np.zeros((len(eps_list),1000))

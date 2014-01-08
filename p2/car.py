@@ -75,7 +75,7 @@ class car:
             #update eligibility trace
 
             self.weights += self.eta*delta*self.eligibility_trace
-            
+
             self.eligibility_trace[action,:] += rs
             self.eligibility_trace *= self.lambdaa*self.gamma
 
@@ -171,7 +171,7 @@ class car:
 
         qs = dot(self.weights,rs)
         
-        tau = exp(-700./(self.time+1)) # increase to 1 for exploitation
+        tau = .01#exp(-700./(self.time+1)) # increase to 1 for exploitation
         pas = exp(tau*qs)/sum(exp(tau*qs))
        
         u = rand()
@@ -183,18 +183,20 @@ class car:
                action = i 
                break
 
-        action = qs.index(max(qs))
+        print action
+        action = np.argmax(qs)
         qact = qs[action] #Q corresponding to the taken action
-        
+
         if learn:   
             #calculate TD error
             delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
 
-            self.eligibility_trace[self.old_action,:] += self.old_rs
+            self.weights += self.eta*delta*self.eligibility_trace
+
+            self.eligibility_trace[action,:] += rs
             self.eligibility_trace *= self.lambdaa*self.gamma
 
-            self.weights += self.eta*delta*self.eligibility_trace
             #update weights
         
         self.old_rs = rs
