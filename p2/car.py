@@ -75,7 +75,7 @@ class car:
 
     def plot_navigation(self):
         scale = 3
-        xx = 50
+        xx = 30
         x_dir = zeros((xx+1,xx+1))
         y_dir = zeros((xx+1,xx+1))
         actions = zeros((xx+1,xx+1))
