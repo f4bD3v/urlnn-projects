@@ -29,13 +29,12 @@ class car:
         # reset values before each trial.
         self.time = 0
         self.eligibility_trace = zeros((self.n_actions,self.n_neurons))
-        self.old_q = None
-        self.old_rp = None
-        self.old_rv = None
+        self.old_q = 0
+        self.old_rs = zeros(self.n_neurons)
         self.old_action = None
 
     def eval_activities(self, posx, posy, xgrid, ygrid, sigma):
-        activities = lambda x,y: np.exp(- (((posx-x)**2) + ((posy-y)**2) ) / (2.*(sigma**2)))
+        activities = lambda x,y: exp(-((posx-x)**2 + (posy-y)**2)/(2*sigma**2))
 
         r = activities(xgrid.flatten(), ygrid.flatten())
 
@@ -69,19 +68,17 @@ class car:
             action = np.argmax(qs)
     	qact = qs[action] #Q corresponding to the taken action
         
-        if learn and self.old_action != None:   
+        if learn:   
             #calculate TD error
             delta = R + self.gamma*qact - self.old_q
             #update eligibility trace
-            self.eligibility_trace = self.eligibility_trace*self.lambdaa*self.gamma
-            #add activation for action a (how to get state s?, have to get neuron for location s)
-            #self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
+
             self.eligibility_trace[self.old_action,:] += self.old_rs
-            #update weights
+            self.eligibility_trace *= self.lambdaa*self.gamma
+
             self.weights += self.eta*delta*self.eligibility_trace
+            #update weights
     	
-        self.old_rv = rv
-        self.old_rp = rp
         self.old_rs = rs
         self.old_action = action
         self.old_q = qact  
