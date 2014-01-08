@@ -35,7 +35,8 @@ class car:
         self.old_action = None
 
     def eval_activation(self, x, y, xgrid, ygrid, sigma):
-        r = np.exp(- (((x-xgrid)**2) + ((y-ygrid)**2) ) / (2*(sigma**2)))
+        r = np.exp(- (((x-xgrid)**2) + ((y-ygrid)**2) ) / (2.*(sigma**2)))
+        #print r.flatten()
         return r.flatten()
 
     def choose_action(self, position, velocity, R, learn = True):
@@ -51,8 +52,9 @@ class car:
         velx,vely = velocity[0],velocity[1]
 
         rp = self.eval_activation(posx, posy, self.p_gridx, self.p_gridy, self.sigmap)
-        rv = self.eval_activation(velx, vely, self.v_gridx, self.v_gridy, self.sigmap)
+        rv = self.eval_activation(velx, vely, self.v_gridx, self.v_gridy, self.sigmav)
         rs = np.concatenate((rp,rv))
+        #print rs
 
         qs = dot(self.weights,rs)
     	
