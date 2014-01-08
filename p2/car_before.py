@@ -18,11 +18,6 @@ class car:
         self.gamma = 0.95 # discount factor
         self.eta = 0.005 # learning rate
         self.lambdaa = 0.95 # eligibility trace decay rate
-        place_cells = np.linspace(0,1,31)
-        vel_cells = np.linspace(-1,1,11)
-        self.p_gridx, self.p_gridy = np.meshgrid(place_cells,place_cells)
-        self.v_gridx, self.v_gridy = np.meshgrid(vel_cells, vel_cells)
-
 
     def reset(self) :
     
@@ -34,9 +29,10 @@ class car:
         self.old_rv = None
         self.old_action = None
 
-    def eval_activation(self, x, y, xgrid, ygrid, sigma):
-        r = np.exp(- (((x-xgrid)**2) + ((y-ygrid)**2) ) / (2*(sigma**2)))
-        return r.flatten()
+    def eval_activation(self, posx, posy, sigma):
+        r = (np.exp( -((posx-rp)**2) ) + np.exp( -((posy-vp)**2) )) / (2*(sigma**2))
+        return r
+
 
     def choose_action(self, position, velocity, R, learn = True):
         # This method must:
@@ -50,11 +46,12 @@ class car:
         posx,posy = position[0],position[1]
         velx,vely = velocity[0],velocity[1]
 
-        rp = self.eval_activation(posx, posy, self.p_gridx, self.p_gridy, self.sigmap)
-        rv = self.eval_activation(velx, vely, self.v_gridx, self.v_gridy, self.sigmap)
-        rs = np.concatenate((rp,rv))
+        v_place = np.linspace(0,1,31)
+        v_velocity = np.linspace(-1,1,11)
 
-        qs = dot(self.weights,rs)
+    	rp = [math.exp(-(math.pow(posx-(j%31)*self.posGridDist,2) + math.pow(posy-(int(j/31))*self.posGridDist,2))/2/math.pow(self.sigmap,2)) for j in range(961)]
+        rv = [math.exp(-(math.pow(velx-(j%11)*self.velGridDist-1,2) + math.pow(vely-(int(j/11))*self.velGridDist-1,2))/2/math.pow(self.sigmav,2)) for j in range(121)]
+        qs = [dot(self.weights[i,0:961],rp) + dot(self.weights[i,961:1082],rv) for i in range(9)]
     	
         if(rand()<self.epsilon):
             action = int(rand()*9)  
@@ -62,7 +59,7 @@ class car:
             #action that leads to maximal Q
             #one could incorporate here a random choice when multiple entries have the same value. 
             #However, this is a marginal case since we're working with continuous variables and hence that wouldn't change too much.
-            action = np.argmax(qs)
+            action = qs.index(max(qs))
     	qact = qs[action] #Q corresponding to the taken action
         
         if learn and self.old_action != None:   
@@ -71,14 +68,12 @@ class car:
             #update eligibility trace
             self.eligibility_trace = self.eligibility_trace*self.lambdaa*self.gamma
             #add activation for action a (how to get state s?, have to get neuron for location s)
-            #self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
-            self.eligibility_trace[self.old_action,:] += self.old_rs
+            self.eligibility_trace[self.old_action,:] += append(self.old_rp,self.old_rv)
             #update weights
             self.weights += self.eta*delta*self.eligibility_trace
     	
         self.old_rv = rv
         self.old_rp = rp
-        self.old_rs = rs
         self.old_action = action
         self.old_q = qact  
     	self.time += 1
