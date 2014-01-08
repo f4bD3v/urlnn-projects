@@ -4,10 +4,12 @@ from pylab import *
 eps_list = [0.1, 0.2, 0.3, 0.6, 0.9]
 colors = ["red", "green", "blue", "yellow"]
 
-eps_times = np.zeros(len(eps_list))
-for eps in eps_list:
+eps_times = np.zeros((len(eps_list), 1000))
+for i in range(len(eps_list)):
+	print i
+	eps = eps_list[i]
 	avg_times = race.average_trainings_last_trials(eps)
-	eps_times.append(eps_times)
+	eps_times[i,:]=avg_times
 	#race.show_race()
 
 figure(1)
